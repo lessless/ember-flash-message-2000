@@ -3,7 +3,9 @@ import Ember from 'ember';
 const { addObserver, getOwner } = Ember;
 
 export default Ember.Service.extend({
+  router: Ember.inject.service('-routing'),
   isObserving: false,
+
 
   init: function() {
     this.set('queuedMessages', Ember.A([]));
@@ -35,17 +37,8 @@ export default Ember.Service.extend({
     }
   },
 
-  _observeRoute: function() {
-    var _this = this;
-    if(!this.get('isObserving')) {
-      // var applicationController =  getOwner(this).lookup('controller:application');
-      // applicationController.addObserver('currentRouteName', function() {
-      var applicationRoute =  getOwner(this).lookup('route:application');
-      applicationRoute.addObserver('routeName', function() {
-        _this._displayQueuedMessages();
-        _this.clearMessages();
-      });
-      this.set('isObserving', true);
-    }
-  }
+  _observeRoute: Ember.observer('router.currentRouteName', function(){
+    this._displayQueuedMessages();
+    this.clearMessages();
+  })
 });

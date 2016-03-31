@@ -1,6 +1,5 @@
 <div class="flash-messages">
-
-  {{#each message in messages}}
+  {{#each messages as |message|}}
     {{flash-message message=message}}
   {{/each}}
 
